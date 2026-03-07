@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NeuroPaper AI</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- ── Header ── -->
+<header>
+  <div class="logo">
+    <div class="logo-icon">🧠</div>
+    <div class="logo-name">Neuro<em>Paper</em> AI</div>
+  </div>
+  <nav class="header-nav">
+    <button class="nav-chip" onclick="scrollToPricing()">Precios</button>
+    <button class="nav-chip primary" onclick="scrollToPricing()">⚡ Upgrade</button>
+  </nav>
+</header>
+
+<main>
+
+  <!-- ── Hero ── -->
+  <section class="hero">
+    <div class="hero-eyebrow">🔬 Neurociencia × Inteligencia Artificial</div>
+    <h1>Entiende cualquier paper<br>en <span class="highlight">segundos</span></h1>
+    <p class="hero-sub">
+      Sube tu PDF y obtén resumen, conceptos, quiz interactivo y más —
+      todo generado por IA en instantes.
+    </p>
+    <div class="chips-row">
+      <span class="chip chip-blue">📋 Resumen técnico</span>
+      <span class="chip chip-green">💡 Explicación simple</span>
+      <span class="chip chip-purple">🔑 Conceptos clave</span>
+      <span class="chip chip-cyan">🤖 Conexión con IA</span>
+      <span class="chip chip-orange">🧩 Quiz interactivo</span>
+      <span class="chip chip-pink">💬 Debate científico</span>
+    </div>
+  </section>
+
+  <!-- ── Upload ── -->
+  <div class="upload-wrap" id="uploadWrap">
+    <div class="upload-zone" id="uploadZone"
+      ondragover="handleDragOver(event)"
+      ondragleave="handleDragLeave()"
+      ondrop="handleDrop(event)"
+      onclick="document.getElementById('fileInput').click()">
+      <span class="upload-emoji">📄</span>
+      <div class="upload-title">Arrastra tu paper aquí</div>
+      <div class="upload-sub">Formato PDF · Máximo 20MB</div>
+      <button class="upload-btn"
+        onclick="event.stopPropagation(); document.getElementById('fileInput').click()">
+        Seleccionar archivo →
+      </button>
+    </div>
+    <input type="file" id="fileInput" accept=".pdf" onchange="handleFileSelect(event)">
+  </div>
+
+  <!-- ── Processing ── -->
+  <div class="processing-panel" id="processingPanel">
+    <span class="brain-spin">🧠</span>
+    <div class="processing-title">Analizando paper…</div>
+    <div class="processing-sub">La IA está leyendo tu documento</div>
+    <div class="prog-wrap">
+      <div class="prog-fill" id="progFill"></div>
+    </div>
+    <div class="proc-steps">
+      <div class="proc-step active" id="ps1"><div class="ps-icon">●</div>Extrayendo texto del PDF</div>
+      <div class="proc-step"        id="ps2"><div class="ps-icon">●</div>Generando resumen técnico</div>
+      <div class="proc-step"        id="ps3"><div class="ps-icon">●</div>Identificando conceptos clave</div>
+      <div class="proc-step"        id="ps4"><div class="ps-icon">●</div>Creando quiz interactivo</div>
+      <div class="proc-step"        id="ps5"><div class="ps-icon">●</div>Finalizando análisis</div>
+    </div>
+  </div>
+
+  <!-- ── Results ── -->
+  <div class="results-panel" id="resultsPanel">
+
+    <!-- Top bar -->
+    <div class="results-topbar">
+      <div class="results-info">
+        <div class="paper-pill">📄 <span id="paperName"></span></div>
+        <div class="score-pill" id="scorePill">🏆 <span id="scoreText">0/0</span></div>
+      </div>
+      <button class="new-btn" onclick="resetApp()">↩ Nuevo paper</button>
+    </div>
+
+    <!-- Tab bar -->
+    <div class="tabs-bar" role="tablist">
+      <button class="tab-btn active" data-tab="summary"  onclick="switchTab('summary')"  role="tab">📋 Resumen</button>
+      <button class="tab-btn"        data-tab="simple"   onclick="switchTab('simple')"   role="tab">💡 Simple</button>
+      <button class="tab-btn"        data-tab="concepts" onclick="switchTab('concepts')" role="tab">🔑 Conceptos</button>
+      <button class="tab-btn"        data-tab="ai"       onclick="switchTab('ai')"       role="tab">🤖 IA</button>
+      <button class="tab-btn"        data-tab="quiz"     onclick="switchTab('quiz')"     role="tab">🧩 Quiz</button>
+      <button class="tab-btn"        data-tab="debate"   onclick="switchTab('debate')"   role="tab">💬 Debate</button>
+    </div>
+
+    <!-- Resumen -->
+    <div class="tab-panel active" id="tab-summary" role="tabpanel">
+      <div class="content-card">
+        <div class="card-eyebrow">
+          <div class="c-icon ci-blue">📋</div>
+          <span class="card-title ct-blue">Resumen Técnico</span>
+        </div>
+        <div class="card-body" id="summaryText"></div>
+      </div>
+    </div>
+
+    <!-- Simple -->
+    <div class="tab-panel" id="tab-simple" role="tabpanel">
+      <div class="content-card">
+        <div class="card-eyebrow">
+          <div class="c-icon ci-green">💡</div>
+          <span class="card-title ct-green">Explicación Simple</span>
+        </div>
+        <div class="card-body" id="simpleText"></div>
+      </div>
+    </div>
+
+    <!-- Conceptos -->
+    <div class="tab-panel" id="tab-concepts" role="tabpanel">
+      <div class="content-card">
+        <div class="card-eyebrow">
+          <div class="c-icon ci-purple">🔑</div>
+          <span class="card-title ct-purple">Conceptos Clave</span>
+        </div>
+        <div class="concepts-cloud" id="conceptsCloud"></div>
+      </div>
+    </div>
+
+    <!-- IA -->
+    <div class="tab-panel" id="tab-ai" role="tabpanel">
+      <div class="content-card">
+        <div class="card-eyebrow">
+          <div class="c-icon ci-cyan">🤖</div>
+          <span class="card-title ct-cyan">Conexión con Inteligencia Artificial</span>
+        </div>
+        <div class="card-body" id="aiText"></div>
+      </div>
+    </div>
+
+    <!-- Quiz -->
+    <div class="tab-panel" id="tab-quiz" role="tabpanel">
+      <div class="content-card">
+        <div class="quiz-topbar">
+          <div style="display:flex; align-items:center; gap:0.5rem;">
+            <div class="c-icon ci-orange">🧩</div>
+            <span class="card-title ct-orange">Quiz de Comprensión</span>
+          </div>
+          <div class="quiz-score-badge">🏆 <span id="quizScore">0 / 0</span></div>
+        </div>
+        <div class="quiz-list" id="quizList"></div>
+      </div>
+    </div>
+
+    <!-- Debate -->
+    <div class="tab-panel" id="tab-debate" role="tabpanel">
+      <div class="content-card">
+        <div class="card-eyebrow">
+          <div class="c-icon ci-pink">💬</div>
+          <span class="card-title ct-pink">Preguntas para Debate Científico</span>
+        </div>
+        <div class="debate-list" id="debateList"></div>
+      </div>
+    </div>
+
+  </div><!-- /results-panel -->
+
+  <!-- ── Pricing ── -->
+  <section class="pricing-section" id="pricingSection">
+    <div class="section-header">
+      <div class="section-eyebrow">✦ Planes de acceso</div>
+      <div class="section-title">Elige tu plan</div>
+    </div>
+    <div class="pricing-grid">
+
+      <!-- Free -->
+      <div class="price-card">
+        <div class="plan-name">Gratuito</div>
+        <div class="plan-price">$0</div>
+        <div class="plan-period">para siempre</div>
+        <ul class="plan-features">
+          <li>3 papers por mes</li>
+          <li>Resumen básico</li>
+          <li>5 conceptos clave</li>
+          <li>Quiz de 3 preguntas</li>
+        </ul>
+        <button class="plan-cta cta-outline">Continuar gratis</button>
+      </div>
+
+      <!-- Pro -->
+      <div class="price-card featured">
+        <div class="popular-tag">MÁS POPULAR</div>
+        <div class="plan-name">Pro</div>
+        <div class="plan-price" style="color:var(--blue)">$12</div>
+        <div class="plan-period">/ mes · facturado anual</div>
+        <ul class="plan-features">
+          <li>Papers ilimitados</li>
+          <li>Análisis completo 6 secciones</li>
+          <li>Exportar a PDF / Notion</li>
+          <li>Historial de papers</li>
+          <li>Quiz con explicaciones</li>
+          <li>Comparar papers</li>
+        </ul>
+        <button class="plan-cta cta-filled">Comenzar Pro →</button>
+      </div>
+
+      <!-- Institution -->
+      <div class="price-card">
+        <div class="plan-name">Institución</div>
+        <div class="plan-price" style="color:var(--purple)">$49</div>
+        <div class="plan-period">/ mes · hasta 20 usuarios</div>
+        <ul class="plan-features">
+          <li>Todo lo de Pro</li>
+          <li>Dashboard grupal</li>
+          <li>Acceso a API</li>
+          <li>Papers compartidos</li>
+          <li>Soporte prioritario</li>
+        </ul>
+        <button class="plan-cta cta-outline"
+          style="border-color:rgba(139,92,246,0.25); color:var(--purple)">
+          Contactar →
+        </button>
+      </div>
+
+    </div>
+  </section>
+
+</main>
+
+<!-- Toast -->
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="app.js"></script>
+</body>
+</html>
